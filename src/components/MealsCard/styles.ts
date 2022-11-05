@@ -3,9 +3,7 @@ import { TouchableOpacity } from 'react-native';
 
 import styled from "styled-components/native";
 
-export const Container = styled(TouchableOpacity).attrs({
-    activeOpacity: 0.8
-})`
+export const Container = styled(TouchableOpacity)`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;

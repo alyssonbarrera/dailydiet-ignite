@@ -1,11 +1,15 @@
-import { Container, Icon, Subtitle, Title } from "./styles";
+import { Container, Icon, PercentCardStyleProps, Subtitle, Title } from "./styles";
 
-export function PercentCard() {
+type Props = {
+    percent: number;
+}
+
+export function PercentCard({ percent = 0 }: Props) {
     return (
-        <Container>
-            <Icon />
-            <Title>
-                90,86%
+        <Container percentType={ percent >= 50 ? 'POSITIVE' : 'NEGATIVE' }>
+            <Icon percentType={ percent >= 50 ? 'POSITIVE' : 'NEGATIVE' } />
+            <Title> 
+                { percent }%
             </Title>
             <Subtitle>
                 das refeições dentro da dieta
@@ -13,3 +17,4 @@ export function PercentCard() {
         </Container>
     )
 }
+ 

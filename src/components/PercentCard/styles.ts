@@ -1,39 +1,47 @@
 import { ArrowUpRight } from "phosphor-react-native";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+
+export type PercentCardStyleProps = "POSITIVE" | "NEGATIVE";
+
+type Props = {
+    percentType: PercentCardStyleProps;
+}
 
 export const Container = styled.TouchableOpacity.attrs({
-    activeOpacity: 1
-})`
+    activeOpacity: 0.8
+})<Props>`
     width: 100%;
     height: 102px;
     justify-content: center;
     position: relative;
 
-    background-color: ${({ theme }) => theme.COLORS.GREEN_LIGHT};
+    background-color: ${({ theme, percentType }) => percentType === "POSITIVE" ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};
 
     border-radius: 8px;
 `;
 
 export const Title = styled.Text`
-    font-family: ${({ theme }) => theme.FONT_FAMILY.BOLD};
-    font-size: ${({ theme }) => theme.FONT_SIZE.XXXL}px;
-    color: ${({ theme }) => theme.COLORS.GRAY_100};
-
+    ${({ theme }) => css`
+        font-family: ${theme.FONT_FAMILY.BOLD};
+        font-size: ${theme.FONT_SIZE.XXXL}px;
+        color: ${theme.COLORS.GRAY_100};
+    `}
     text-align: center;
 `
 
 export const Subtitle = styled.Text`
-    font-family: ${({ theme }) => theme.FONT_FAMILY.REGULAR};
-    font-size: ${({ theme }) => theme.FONT_SIZE.MD}px;
-    color: ${({ theme }) => theme.COLORS.GRAY_200};
-
+    ${({ theme }) => css`
+        font-family: ${theme.FONT_FAMILY.REGULAR};
+        font-size: ${theme.FONT_SIZE.MD}px;
+        color: ${theme.COLORS.GRAY_200};
+    `}
     text-align: center;
 `
 
-export const Icon = styled(ArrowUpRight).attrs(({ theme }) => ({
-    color: theme.COLORS.GREEN_DARK,
+export const Icon = styled(ArrowUpRight).attrs<Props>(({ theme, percentType }) => ({
+    color: percentType === "POSITIVE" ? theme.COLORS.GREEN_DARK : theme.COLORS.RED_DARK,
     size: 24,
-}))`
+}))<Props>`
     position: absolute;
     right: 8px;
     top: 8px;

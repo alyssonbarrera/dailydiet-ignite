@@ -1,14 +1,33 @@
 import { ScrollView } from "react-native";
-import { Container, Ellipse, Header, Logo, MealsSectionContent, MealsSection, MealsSectionHeader, MealsTitle, PercentSection } from "./styles";
+import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "styled-components/native";
+import { Plus } from "phosphor-react-native";
 
 import { Button } from "@components/Button";
 import { PercentCard } from "@components/PercentCard";
 import { MealsContainer } from "@components/MealsContainer";
 
+import {
+    Container,
+    Ellipse,
+    Header,
+    Logo,
+    MealsSectionContent,
+    MealsSection,
+    MealsSectionHeader,
+    MealsTitle,
+    PercentSection
+} from "./styles";
+
 import logoImg from "@assets/logo.png";
 import ellipseImg from "@assets/ellipse.png";
 
 export function Home() {
+
+    const navigation = useNavigation();
+
+    const { COLORS } = useTheme()
+
     return (
         <ScrollView>
             <Container>
@@ -17,7 +36,7 @@ export function Home() {
                     <Ellipse source={ellipseImg} />
                 </Header>
                 <PercentSection>
-                    <PercentCard />
+                    <PercentCard percent={50} />
                 </PercentSection>
 
                 <MealsSection>
@@ -25,7 +44,12 @@ export function Home() {
                         <MealsTitle>
                             Refeições
                         </MealsTitle>
-                        <Button />
+                        <Button
+                            title="Nova refeição"
+                            type="PRIMARY"
+                            onPress={() => navigation.navigate('newMeal')}
+                            icon={<Plus size={18} color={COLORS.WHITE} />}
+                        />
                     </MealsSectionHeader>
 
                     <MealsSectionContent>
