@@ -26,7 +26,7 @@ export function Home() {
 
     const navigation = useNavigation();
 
-    const { COLORS } = useTheme()
+    const { COLORS } = useTheme();
 
     return (
         <ScrollView>
@@ -36,7 +36,7 @@ export function Home() {
                     <Ellipse source={ellipseImg} />
                 </Header>
                 <PercentSection>
-                    <PercentCard percent={50} />
+                    <PercentCard percent={90.86} onPress={() => navigation.navigate('statistics')} />
                 </PercentSection>
 
                 <MealsSection>

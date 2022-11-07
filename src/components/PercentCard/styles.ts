@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "phosphor-react-native";
+import { TouchableOpacity } from "react-native";
 import styled, { css } from "styled-components/native";
 
 export type PercentCardStyleProps = "POSITIVE" | "NEGATIVE";
@@ -7,9 +8,7 @@ type Props = {
     percentType: PercentCardStyleProps;
 }
 
-export const Container = styled.TouchableOpacity.attrs({
-    activeOpacity: 0.8
-})<Props>`
+export const Container = styled(TouchableOpacity)<Props>`
     width: 100%;
     height: 102px;
     justify-content: center;

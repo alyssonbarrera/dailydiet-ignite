@@ -18,6 +18,7 @@ import {
     Options,
     Title,
 } from "./styles";
+import { useNavigation } from "@react-navigation/native";
 
 
 export function NewMeal() {
@@ -30,6 +31,8 @@ export function NewMeal() {
     const [selectedOption, setSelectedOption] = useState('');
     const [mealDescription, setMealDescription] = useState('');
 
+    const navigation = useNavigation();
+
     function handleNewMeal() {
         console.log({
             mealName,
@@ -38,6 +41,16 @@ export function NewMeal() {
             hour,
             selectedOption
         });
+
+        setDate('');
+        setHour('');
+        setMealName('');
+        setMealDescription('');
+        setSelectedOption('');
+        setShowDate(false);
+        setShowHour(false);
+
+        navigation.navigate('feedback', { isPositive: true } );
     }
 
     return (

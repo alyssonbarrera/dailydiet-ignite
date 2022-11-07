@@ -4,6 +4,10 @@ export declare global {
             home: undefined;
             newMeal: undefined;
             meal: undefined;
+            feedback: {
+                isPositive: boolean;
+            }
+            statistics: undefined;
         }
     }
 }
