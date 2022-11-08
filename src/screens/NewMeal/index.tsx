@@ -19,12 +19,13 @@ import {
     Title,
 } from "./styles";
 import { useNavigation } from "@react-navigation/native";
+import { addMeal } from "../../storage/meal/mealAdd";
 
 
 export function NewMeal() {
 
     const [date, setDate] = useState('');
-    const [hour, setHour] = useState('');
+    const [time, setTime] = useState('');
     const [mealName, setMealName] = useState('');
     const [showDate, setShowDate] = useState(false);
     const [showHour, setShowHour] = useState(false);
@@ -33,17 +34,19 @@ export function NewMeal() {
 
     const navigation = useNavigation();
 
-    function handleNewMeal() {
-        console.log({
-            mealName,
-            mealDescription,
-            date,
-            hour,
-            selectedOption
-        });
+    async function handleNewMeal() {
+
+        await addMeal({
+            id: new Date().getTime().toString(),
+            name: mealName,
+            description: mealDescription,
+            date: date,
+            time: time,
+            withinTheDiet: selectedOption === 'Sim'
+        })
 
         setDate('');
-        setHour('');
+        setTime('');
         setMealName('');
         setMealDescription('');
         setSelectedOption('');
@@ -88,7 +91,7 @@ export function NewMeal() {
                         </Title>
                         <Button onPress={() => setShowHour(true)}>
                             <ButtonText>
-                                { hour }
+                                { time }
                             </ButtonText>
                         </Button>
                     </ButtonContainer>
@@ -133,7 +136,7 @@ export function NewMeal() {
                             display="default"
                             onChange={(event, hour) => {
                                 setShowHour(false);
-                                setHour(event.type === "set" ? hour?.getHours() + ':' + hour?.getMinutes().toString().padStart(2, '0') : prevHour => prevHour);
+                                setTime(event.type === "set" ? hour?.getHours() + ':' + hour?.getMinutes().toString().padStart(2, '0') : prevHour => prevHour);
                             }}
                             locale="pt-BR"
                             positiveButtonLabel="Confirmar"

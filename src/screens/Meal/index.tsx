@@ -21,17 +21,26 @@ import {
     ModalContent,
     ModalText
 } from "./styles";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { MealProps } from '../../storage/meal/mealType';
+import { removeMeal } from '../../storage/meal/mealRemove';
 
 export function Meal() {
 
     const [modalVisible, setModalVisible] = useState(false);
-
     const { COLORS } = useTheme();
+    
     const navigation = useNavigation();
-
-    function handleRemoveMeal() {
-        setModalVisible(false)
+    const route = useRoute();
+    const { meal } = route.params as any;
+    
+    async function handleRemoveMeal() {
+        try {
+            await removeMeal(meal.id);
+            navigation.navigate('home');
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -43,18 +52,18 @@ export function Meal() {
                 />
                 <Content>
                     <MealTitle>
-                        Refeição
+                        { meal.name }
                     </MealTitle>
                     <MealDescription>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        { meal.description }
                     </MealDescription>
                     <MealDateAndHourTitle>
                         Data e hora
                     </MealDateAndHourTitle>
                     <MealDateAndHour>
-                        12.08.22 - 12:00
+                        { meal.date.replace('/', '.').replace('/', '.') } - { meal.time }
                     </MealDateAndHour>
-                    <Tag type="PRIMARY" />
+                    { meal.withinTheDiet ? <Tag type="PRIMARY" /> : <Tag type="SECONDARY" /> }
                 </Content>
                 <Footer>
                     <Button

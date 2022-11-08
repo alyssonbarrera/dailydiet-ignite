@@ -3,7 +3,6 @@ import styled from "styled-components/native";
 
 export const Container = styled(SafeAreaView)`
     flex: 1;
-
     background-color: ${({ theme }) => theme.COLORS.GRAY_700};
 
     padding: 24px;
@@ -31,7 +30,6 @@ export const PercentSection = styled.View`
 `;
 
 export const MealsSection = styled.View`
-
 `;
 
 export const MealsSectionHeader = styled.View`
@@ -47,5 +45,4 @@ export const MealsTitle = styled.Text`
 `;
 
 export const MealsSectionContent = styled.View`
-
 `;

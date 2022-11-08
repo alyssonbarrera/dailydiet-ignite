@@ -17,7 +17,6 @@ export function Feedback() {
     const route = useRoute();
 
     const { isPositive } = route.params as RouteParams;
-    console.log(isPositive);
 
     return (
         <Container>
