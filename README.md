@@ -25,6 +25,10 @@ The application was developed in React Native with Expo and Styled-components us
     </div>
 </div>
 
+## Video
+
+https://user-images.githubusercontent.com/86618257/200913035-fadc6d8e-c0ca-4f0e-880b-85dc9902592c.mp4
+
 ## Stack
 
 <img width="30px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg"/> <img width="30px" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"/>
