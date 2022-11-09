@@ -19,7 +19,7 @@ export const MealsCard = ({ time, title, type = 'PRIMARY', ...rest }: Props) => 
             </Time>
             <Divider />
             <Title>
-                { title }
+                { title.length > 30 ? title.substring(0, 22) + '...' : title }
             </Title>
             <Status
                 color={ type === 'PRIMARY' ? COLORS.GREEN_MID : COLORS.RED_MID }

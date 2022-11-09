@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 
@@ -45,4 +46,16 @@ export const MealsTitle = styled.Text`
 `;
 
 export const MealsSectionContent = styled.View`
+`;
+
+export const Gradient = styled(LinearGradient).attrs({
+    colors: ["rgba(250, 250, 250, 0)", "rgba(250, 250, 250, 1)"],
+    start: { x: 0, y: 0 },
+    end: { x: 0, y: 1.3 },
+})`
+    width: 100%;
+    height: 150px;
+
+    position: absolute;
+    bottom: 0;
 `;

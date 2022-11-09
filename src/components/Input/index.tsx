@@ -21,7 +21,7 @@ export function Input({ label, type = 'PRIMARY', ...rest }: Props) {
                 textAlignVertical="top"
                 textBreakStrategy='simple'
                 multiline={type === 'SECONDARY'}
-                selectionColor={COLORS.GRAY_200}
+                selectionColor={COLORS.GRAY_500}
                 {...rest}
             />
         </Container>

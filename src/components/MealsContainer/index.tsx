@@ -10,7 +10,9 @@ export function MealsContainer({ date, children }: Props) {
 
     return (
         <Container>
-                <Title>{ date }</Title>
+                <Title>
+                    { date.split('/').join('.') }
+                </Title>
                 { children }
         </Container>
     )

@@ -1,10 +1,16 @@
 import { useState } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { Input } from "@components/Input";
 import { Header } from "@components/Header";
 import { OptionButton } from "@components/OptionButton";
 import { Button as ButtonComponent } from "@components/Button";
+
+import { addMeal } from "@storage/meal/mealAdd";
+import { MealProps } from "@storage/meal/mealType";
+import { editMeal } from "@storage/meal/mealEdit";
+import { getStatistic } from "@storage/meal/mealGetStatistic";
 
 import {
     Button,
@@ -18,42 +24,64 @@ import {
     Options,
     Title,
 } from "./styles";
-import { useNavigation } from "@react-navigation/native";
-import { addMeal } from "../../storage/meal/mealAdd";
 
+type RouteParams = {
+    meal?: MealProps;
+    type: 'add' | 'edit';
+};
 
-export function NewMeal() {
+export function AddOrEditMeal() {
 
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
-    const [mealName, setMealName] = useState('');
+    const route = useRoute();
+    const { meal, type } = route?.params as RouteParams;
+
+    const [date, setDate] = useState(meal?.date || '');
+    const [time, setTime] = useState(meal?.time || '');
+    const [mealName, setMealName] = useState(meal?.name || '');
     const [showDate, setShowDate] = useState(false);
     const [showHour, setShowHour] = useState(false);
-    const [selectedOption, setSelectedOption] = useState('');
-    const [mealDescription, setMealDescription] = useState('');
+    const [selectedOption, setSelectedOption] = useState(meal?.withinTheDiet === true ? 'Sim' : meal?.withinTheDiet === false ? 'Não' : '');
+    const [mealDescription, setMealDescription] = useState(meal?.description || '');
 
     const navigation = useNavigation();
 
-    async function handleNewMeal() {
+    async function handleMeal() {
+        try {
+            if(type === 'add') {
+                await addMeal({
+                    id: new Date().getTime().toString(),
+                    name: mealName,
+                    description: mealDescription,
+                    date: date,
+                    time: time,
+                    withinTheDiet: selectedOption === 'Sim'
+                })
+            } else {
+                await editMeal(meal.id, {
+                    id: meal.id,
+                    name: mealName,
+                    description: mealDescription,
+                    date: date,
+                    time: time,
+                    withinTheDiet: selectedOption === 'Sim'
+                })
+            }
 
-        await addMeal({
-            id: new Date().getTime().toString(),
-            name: mealName,
-            description: mealDescription,
-            date: date,
-            time: time,
-            withinTheDiet: selectedOption === 'Sim'
-        })
+            const { calculateMealsWithinTheDiet } = await getStatistic();
+            
+            navigation.navigate('feedback', { isPositive: calculateMealsWithinTheDiet >= 50 ? true : false });
 
-        setDate('');
-        setTime('');
-        setMealName('');
-        setMealDescription('');
-        setSelectedOption('');
-        setShowDate(false);
-        setShowHour(false);
+            setDate('');
+            setTime('');
+            setMealName('');
+            setMealDescription('');
+            setSelectedOption('');
+            setShowDate(false);
+            setShowHour(false);
 
-        navigation.navigate('feedback', { isPositive: true } );
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -66,11 +94,13 @@ export function NewMeal() {
                 <Input
                     label="Nome"
                     onChangeText={setMealName}
+                    value={mealName}
                 />
                 <Input 
                     label="Descrição"
                     type="SECONDARY"
-                    onChangeText={setMealDescription}    
+                    onChangeText={setMealDescription}
+                    value={mealDescription}  
                 />
                 <DateAndHour>
                     <ButtonContainer style={{
@@ -136,7 +166,7 @@ export function NewMeal() {
                             display="default"
                             onChange={(event, hour) => {
                                 setShowHour(false);
-                                setTime(event.type === "set" ? hour?.getHours() + ':' + hour?.getMinutes().toString().padStart(2, '0') : prevHour => prevHour);
+                                setTime(event.type === "set" ? hour?.getHours().toString().padStart(2, '0') + ':' + hour?.getMinutes().toString().padStart(2, '0') : prevHour => prevHour);
                             }}
                             locale="pt-BR"
                             positiveButtonLabel="Confirmar"
@@ -146,9 +176,9 @@ export function NewMeal() {
             </Content>
             <Footer>
                 <ButtonComponent
-                    title="Cadastrar refeição"
+                    title={type === 'add' ? "Cadastrar refeição" : "Salvar alterações"}
                     type="SECONDARY"
-                    onPress={handleNewMeal}
+                    onPress={handleMeal}
                 />
             </Footer>
         </Container>

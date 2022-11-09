@@ -7,6 +7,12 @@ import { Plus } from "phosphor-react-native";
 import { Button } from "@components/Button";
 import { PercentCard } from "@components/PercentCard";
 import { MealsContainer } from "@components/MealsContainer";
+import { Loading } from "@components/Loading";
+import { MealsCard } from "@components/MealsCard";
+
+import { getAllMeals } from "@storage/meal/mealGetAll";
+import { MealProps } from "@storage/meal/mealType";
+import { getStatistic } from "@storage/meal/mealGetStatistic";
 
 import {
     Container,
@@ -17,16 +23,16 @@ import {
     MealsSection,
     MealsSectionHeader,
     MealsTitle,
-    PercentSection
+    PercentSection,
+    Gradient
 } from "./styles";
 
 import logoImg from "@assets/logo.png";
 import ellipseImg from "@assets/ellipse.png";
-import { getAllMeals } from "../../storage/meal/mealGetAll";
-import { Loading } from "@components/Loading";
-import { MealProps } from "src/storage/meal/mealType";
-import { MealsCard } from "@components/MealsCard";
 
+type Meal = {
+    meal: MealProps;
+};
 
 export function Home() {
 
@@ -41,10 +47,15 @@ export function Home() {
     async function fetchMeals() {
         try {
             setLoading(true);
+
             const data = await getAllMeals();
+            
             setMeals(data);
-            setDates(data.map(meal => meal.date).filter((value, index, self) => self.indexOf(value) === index));
-            setMealsPercent(data.length > 0 ? (data.filter(meal => meal.withinTheDiet === true).length / data.length) * 100 : 0);
+            setDates(data.map((meal: MealProps) => meal.date).filter((value, index, self) => self.indexOf(value) === index));
+
+            const { calculateMealsWithinTheDiet } = await getStatistic();
+            setMealsPercent(calculateMealsWithinTheDiet);
+
         } catch (error) {
             console.log(error);
         } finally {
@@ -52,99 +63,69 @@ export function Home() {
         }
     }
 
-
-    const data = [
-        {
-            date: '01/01/2021',
-            meals: [
-                {
-                    id: '1',
-                    name: 'Café da manhã',
-                    description: 'Café, pão com manteiga e queijo',
-                    time: '08:00',
-                    withinTheDiet: true
-                },
-                {
-                    id: '2',
-                    name: 'Almoço',
-                    description: 'Arroz, feijão, carne e salada',
-                    time: '12:00',
-                    withinTheDiet: true
-                }
-            ]
-        },
-        {
-            date: '02/01/2021',
-            meals: [
-                {
-                    id: '3',
-                    name: 'Café da manhã',
-                    description: 'Café, pão com manteiga e queijo',
-                    time: '08:00',
-                    withinTheDiet: true
-                }
-            ]
-        }
-    ]
-
     useFocusEffect(useCallback(() => {
         fetchMeals();
     }, []));
 
     return (
-        <ScrollView
-            contentContainerStyle={{
-                flexGrow: 1,
-            }}
-        >
-            <Container>
-                <Header>
-                    <Logo source={logoImg} />
-                    <Ellipse source={ellipseImg} />
-                </Header>
-                <PercentSection>
-                    <PercentCard percent={mealsPercent} onPress={() => navigation.navigate('statistics')} />
-                </PercentSection>
+        <>
+            <ScrollView
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingBottom: 130,
+                    backgroundColor: COLORS.GRAY_700
+                }}
+            >
+                <Container>
+                    <Header>
+                        <Logo source={logoImg} />
+                        <Ellipse source={ellipseImg} />
+                    </Header>
+                    <PercentSection>
+                        <PercentCard loading={loading} percent={mealsPercent} onPress={() => navigation.navigate('statistics')} />
+                    </PercentSection>
 
-                <MealsSection>
-                    <MealsSectionHeader>
-                        <MealsTitle>
-                            Refeições
-                        </MealsTitle>
-                        <Button
-                            title="Nova refeição"
-                            type="PRIMARY"
-                            onPress={() => navigation.navigate('newMeal')}
-                            icon={<Plus size={18} color={COLORS.WHITE} />}
-                        />
-                    </MealsSectionHeader>
+                    <MealsSection>
+                        <MealsSectionHeader>
+                            <MealsTitle>
+                                Refeições
+                            </MealsTitle>
+                            <Button
+                                title="Nova refeição"
+                                type="PRIMARY"
+                                onPress={() => navigation.navigate('addOrEditMeal', { type: 'add'})}
+                                icon={<Plus size={18} color={COLORS.WHITE} />}
+                            />
+                        </MealsSectionHeader>
 
-                    <MealsSectionContent>
-                        {
-                            loading ? <Loading /> : dates.map(date => (                                
-                                <MealsContainer date={date}>
-                                {
-                                    meals.filter(meal => meal.date === date).map(meal => (
-                                        <MealsCard
-                                            key={meal.id}
-                                            time={meal.time}
-                                            title={meal.name}
-                                            type={meal.withinTheDiet ? 'PRIMARY' : 'SECONDARY'}
-                                            onPress={() => navigation.navigate('meal', { meal } as any)}
-                                        />
-                                    ))
-                                }
-                                </MealsContainer>
-                            )).sort((a, b) => {
-                                const dateA = new Date(a.props.date);
-                                const dateB = new Date(b.props.date);
-                                return dateB.getTime() - dateA.getTime();
-                            })
-                        }
-                    </MealsSectionContent>
+                        <MealsSectionContent>
+                            {
+                                loading ? <Loading /> : dates.map((date, index) => (                                
+                                    <MealsContainer key={index} date={date}>
+                                    {
+                                        meals.filter(meal => meal.date === date).map(meal => (
+                                            <MealsCard
+                                                key={meal.id}
+                                                time={meal.time}
+                                                title={meal.name}
+                                                type={meal.withinTheDiet ? 'PRIMARY' : 'SECONDARY'}
+                                                onPress={() => navigation.navigate('meal', { meal } as Meal)}
+                                            />
+                                        )).sort((a, b) => b.props.time.localeCompare(a.props.time))
+                                    }
+                                    </MealsContainer>
+                                )).sort((a, b) => {
+                                    const dateA = new Date(a.props.date);
+                                    const dateB = new Date(b.props.date);
+                                    return dateB.getTime() - dateA.getTime();
+                                })
+                            }
+                        </MealsSectionContent>
 
-                </MealsSection>
-            </Container>
-        </ScrollView>
+                    </MealsSection>
+                </Container>
+            </ScrollView>
+            <Gradient />
+        </>
     )
 }

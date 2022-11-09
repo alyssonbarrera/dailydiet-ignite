@@ -4,7 +4,10 @@ export declare global {
     namespace ReactNavigation {
         interface RootParamList {
             home: undefined;
-            newMeal: undefined;
+            addOrEditMeal: {
+                type: "add" | "edit";
+                meal?: MealProps;
+            };
             meal: {
                 meal: MealProps;
             };

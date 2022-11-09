@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { PencilLine, Trash } from 'phosphor-react-native'
-import { useTheme } from "styled-components/native";
 import { Modal } from 'react-native'
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTheme } from "styled-components/native";
+import { PencilLine, Trash } from 'phosphor-react-native'
 
 import { Button } from "@components/Button";
 import { Header } from "@components/Header";
 import { Tag } from "@components/Tag";
+
+import { MealProps } from '@storage/meal/mealType';
+import { removeMeal } from '@storage/meal/mealRemove';
 
 import {
     Container,
@@ -21,9 +25,10 @@ import {
     ModalContent,
     ModalText
 } from "./styles";
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { MealProps } from '../../storage/meal/mealType';
-import { removeMeal } from '../../storage/meal/mealRemove';
+
+type Meal = {
+    meal: MealProps;
+};
 
 export function Meal() {
 
@@ -32,7 +37,8 @@ export function Meal() {
     
     const navigation = useNavigation();
     const route = useRoute();
-    const { meal } = route.params as any;
+
+    const { meal } = route.params as Meal;
     
     async function handleRemoveMeal() {
         try {
@@ -48,7 +54,7 @@ export function Meal() {
                 <Header
                 title="Refeição"
                 navigate="home"
-                color="GREEN_LIGHT"
+                color={meal.withinTheDiet ? "GREEN_LIGHT" : "RED_LIGHT"}
                 />
                 <Content>
                     <MealTitle>
@@ -78,7 +84,7 @@ export function Meal() {
                                 color={COLORS.WHITE}
                             />
                         }
-                        onPress={() => navigation.navigate('newMeal')}
+                        onPress={() => navigation.navigate('addOrEditMeal', { meal, type: 'edit' })}
                     />
                     <Button
                         title="Excluir refeição"
@@ -93,7 +99,7 @@ export function Meal() {
                     />
                 </Footer>
             <Modal
-                animationType="none"
+                animationType="fade"
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
@@ -102,7 +108,7 @@ export function Meal() {
                 statusBarTranslucent
             >
                 <ModalContainer>
-                    <Filter></Filter>
+                    <Filter />
                     <ModalContent>
                         <ModalText>
                             Deseja realmente excluir o registro da refeição?

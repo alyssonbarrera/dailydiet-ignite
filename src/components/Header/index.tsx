@@ -3,7 +3,7 @@ import { Button, Container, HeaderColorStyleProps, Icon, Title } from "./styles"
 
 type Props = {
     title: string;
-    navigate: 'home' | 'newMeal';
+    navigate: 'home' | 'addOrEditMeal';
     color?: HeaderColorStyleProps;
 };
 
