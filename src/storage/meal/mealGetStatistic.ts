@@ -11,32 +11,48 @@ type StatisticProps = {
     bestSequenceOfMealsWithinTheDiet: number;
 };
 
+AsyncStorage.clear();
+
+function bestMealSequence(meals: MealProps[]) {
+    let maxSequence = 0;
+    let currentSequence = 0;
+  
+    for (let i = 0; i < meals.length; i++) {
+      if (meals[i].withinTheDiet === true) {
+        currentSequence++;
+      } else {
+        maxSequence = Math.max(maxSequence, currentSequence);
+        currentSequence = 0;
+      }
+    }
+  
+    return Math.max(maxSequence, currentSequence);
+}
+
 export async function getStatistic(): Promise<StatisticProps> {
     try {
         const storedMeals = await getAllMeals();
         const storedBestSequenceOfMealsWithinTheDiet = await AsyncStorage.getItem(BEST_SEQUENCE_OF_MEALS_WITHIN_THE_DIET);
 
         const totalMeals = storedMeals.length;
-        const mealsWithinTheDiet = storedMeals.filter((meal: MealProps) => meal.withinTheDiet === true).length;
+        const mealsWithinTheDiet = bestMealSequence(storedMeals.filter((meal: MealProps) => meal.withinTheDiet));
+
         const mealsOutsideTheDiet = totalMeals - mealsWithinTheDiet;
         
-        const calculateMealsWithinTheDiet = (mealsWithinTheDiet / totalMeals) * 100 || 0;
+        const calculateMealsWithinTheDiet = mealsWithinTheDiet === 0 || totalMeals === 0 ? 0 : (mealsWithinTheDiet / totalMeals) * 100;
 
-        const countMealsByDate = storedMeals.filter((meal: MealProps) => meal.withinTheDiet === true).reduce((acc, meal) => {
-            acc[meal.date] = (acc[meal.date] || 0) + 1;
-            return acc;
-        }, {})
-
-        const countMaxMealsByDate = Math.max(...Object.values(countMealsByDate) as number[]);
-
-        await AsyncStorage.setItem(BEST_SEQUENCE_OF_MEALS_WITHIN_THE_DIET, countMaxMealsByDate.toString());
+        let bestSequenceOfMealsWithinTheDiet = Math.max(mealsWithinTheDiet, Number(storedBestSequenceOfMealsWithinTheDiet));
+        
+        if (bestSequenceOfMealsWithinTheDiet > Number(storedBestSequenceOfMealsWithinTheDiet)) {
+            await AsyncStorage.setItem(BEST_SEQUENCE_OF_MEALS_WITHIN_THE_DIET, bestSequenceOfMealsWithinTheDiet.toString());
+        }
 
         return {
             totalMeals,
             calculateMealsWithinTheDiet,
             mealsWithinTheDiet,
             mealsOutsideTheDiet,
-            bestSequenceOfMealsWithinTheDiet: Number(storedBestSequenceOfMealsWithinTheDiet),
+            bestSequenceOfMealsWithinTheDiet,
         };
 
     } catch (error) {
