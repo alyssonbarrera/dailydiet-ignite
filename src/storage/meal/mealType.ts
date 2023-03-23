@@ -5,4 +5,5 @@ export type MealProps = {
     withinTheDiet: boolean;
     date: string;
     time: string;
+    dateUtc: string;
 };

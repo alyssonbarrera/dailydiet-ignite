@@ -24,6 +24,7 @@ import {
     Options,
     Title,
 } from "./styles";
+import { Alert } from "react-native";
 
 type RouteParams = {
     meal?: MealProps;
@@ -47,6 +48,10 @@ export function AddOrEditMeal() {
 
     async function handleMeal() {
         try {
+            if(!mealName || !mealDescription || !date || !time || !selectedOption) {
+                return Alert.alert('Preencha todos os campos', 'É necessário preencher todos os campos para continuar');
+            }
+
             if(type === 'add') {
                 await addMeal({
                     id: new Date().getTime().toString(),
@@ -54,7 +59,8 @@ export function AddOrEditMeal() {
                     description: mealDescription,
                     date: date,
                     time: time,
-                    withinTheDiet: selectedOption === 'Sim'
+                    withinTheDiet: selectedOption === 'Sim',
+                    dateUtc: date.split('/').reverse().join('-') + 'T' + time + ':00.000Z'
                 })
             } else {
                 await editMeal(meal.id, {
@@ -63,7 +69,8 @@ export function AddOrEditMeal() {
                     description: mealDescription,
                     date: date,
                     time: time,
-                    withinTheDiet: selectedOption === 'Sim'
+                    withinTheDiet: selectedOption === 'Sim',
+                    dateUtc: date.split('/').reverse().join('-') + 'T' + time + ':00.000Z'
                 })
             }
 
@@ -150,7 +157,7 @@ export function AddOrEditMeal() {
                             display="default"
                             onChange={(event, date) => {
                                 setShowDate(false);
-                                setDate(event.type === "set" ? date?.getDate().toString().padStart(2, '0') + '/' + (date?.getMonth() + 1) + '/' + date?.getFullYear() : prevDate => prevDate);
+                                setDate(event.type === "set" ? date?.getDate().toString().padStart(2, '0') + '/' + (date?.getMonth() + 1).toString().padStart(2, '0') + '/' + date?.getFullYear() : prevDate => prevDate);
                             }}
                             locale="pt-BR"
                             positiveButtonLabel="Confirmar"
