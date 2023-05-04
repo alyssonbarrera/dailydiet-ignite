@@ -19,8 +19,8 @@ The application was developed in React Native with Expo and Styled-components us
         <img width="130px" src="./assets/print-1.jpg" alt="Print da tela inicial com algumas refeições registradas" />
         <img width="130px" src="./assets/print-2.jpg" alt="Print da tela de estatísticas" />
         <img width="130px" src="./assets/print-3.jpg" alt="Print da tela de cadastrar nova refeição" />
-        <img width="130px" src="./assets/print-4.jpg" alt="Print da tela da tela de refeição que mostra a refeição escolhida que está dentro da dieta" />
-        <img width="130px" src="./assets/print-5.jpg" alt="Print da tela da tela de refeição que mostra a refeição escolhida que está fora da dieta"/>
+        <img width="130px" src="./assets/print-4.jpg" alt="Print da tela de refeição que mostra a refeição escolhida que está dentro da dieta" />
+        <img width="130px" src="./assets/print-5.jpg" alt="Print da tela de refeição que mostra a refeição escolhida que está fora da dieta"/>
         <img width="130px" src="./assets/print-6.jpg" alt="Print da tela de refeição que mostra a refeição escolhida com um modal de confirmação para exclusão do registro" />
     </div>
 </div>
